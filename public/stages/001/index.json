@@ -1,0 +1,19 @@
+{
+  "width": 1200,
+  "height": 768,
+  "base": {
+    "className": "base",
+    "src": "/stages/001/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/001/expected.png"
+  },
+  "tree": [
+    {
+      "className": "boss",
+      "src": "/stages/001/objects/boss.png",
+      "initialCss": ".boss{position: absolute; width: 114px; height: 102px;}"
+    }
+  ]
+}

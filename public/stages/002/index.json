@@ -1,0 +1,36 @@
+{
+  "width": 1200,
+  "height": 768,
+  "base": {
+    "className": "base",
+    "src": "/stages/002/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/002/expected.png"
+  },
+  "tree": [
+    {
+      "className": "monsterWrapper",
+      "initialCss": ".monsterWrapper{position: absolute; display: flex;} .monster{display: block;}",
+      "children": [
+        {
+          "className": "monster",
+          "repeat": 6,
+          "src": "/stages/002/objects/monster.png"
+        }
+      ]
+    },
+    {
+      "className": "flameWrapper",
+      "initialCss": ".flameWrapper{position: absolute; display: flex;} .flame{display: block;}",
+      "children": [
+        {
+          "className": "flame",
+          "src": "/stages/002/objects/flame.png",
+          "initialCss": ".flame{position: absolute;}"
+        }
+      ]
+    }
+  ]
+}

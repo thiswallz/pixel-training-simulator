@@ -1,0 +1,25 @@
+.page {
+  font-family: var(--font-geist-sans);
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainWrapper {
+  position: relative;
+}
+
+.diff {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity .25s ease-in-out;
+
+  &.showDiff {
+    opacity: .5;
+  }
+}
