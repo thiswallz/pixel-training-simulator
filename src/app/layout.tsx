@@ -4,14 +4,8 @@ import "./globals.scss";
 import {Providers} from "@/app/providers";
 
 const geistSans = localFont({
-    src: "./fonts/GeistVF.woff",
+    src: "./fonts/Jersey10-Regular.ttf",
     variable: "--font-geist-sans",
-    weight: "100 900",
-});
-const geistMono = localFont({
-    src: "./fonts/GeistMonoVF.woff",
-    variable: "--font-geist-mono",
-    weight: "100 900",
 });
 
 export const metadata: Metadata = {
@@ -32,7 +26,7 @@ export default function RootLayout({children}: Readonly<{
 }>) {
     return (
         <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <body className={`${geistSans.variable}`}>
         <Providers>
             {children}
         </Providers>

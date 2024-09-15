@@ -1,6 +1,7 @@
 {
   "width": 1200,
   "height": 768,
+  "music": "/musics/4 - Village.ogg",
   "base": {
     "className": "base",
     "src": "/stages/002/base.png"

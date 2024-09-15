@@ -1,5 +1,7 @@
 import {useEffect, useState} from "react";
 import {useGameContext} from "@/app/providers/GameContext";
+import Editor, {DiffEditor, useMonaco, loader} from '@monaco-editor/react';
+
 
 type CodeEditorProps = {
     identifier: string;
@@ -12,10 +14,8 @@ export default function CodeEditor({initialCode, identifier}: CodeEditorProps) {
     } = useGameContext();
     const [cssCode, setCssCode] = useState(initialCode);
 
-    const handleChange = (event: any) => {
-        const userCssToInject = event.target.value;
-
-        setCssCode(userCssToInject);
+    const handleChange = (css: string) => {
+        setCssCode(css);
     };
 
     useEffect(() => {
@@ -49,12 +49,16 @@ export default function CodeEditor({initialCode, identifier}: CodeEditorProps) {
     }, [cssCode]);
 
     return (
-        <textarea
-            value={cssCode}
+        <Editor
+            defaultLanguage="scss"
+            theme="vs-dark"
+            height={300}
+            width={400}
+            defaultValue={cssCode}
+            options={{
+                minimap: {enabled: false},
+            }}
             onChange={handleChange}
-            rows={10}
-            cols={50}
-            placeholder="Write your CSS here..."
         />
     );
 }

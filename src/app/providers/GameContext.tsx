@@ -18,11 +18,12 @@ interface GameContextState {
     loadImageToCanvas: (url: string, myRef: any) => void;
     showDiff: boolean;
     setShowDiff: (showDiff: boolean) => Promise<void>;
+    stage: string;
+    setStage: (stage: string) => void;
 }
 
 async function loadImageToCanvas(url: string, myRef: any) {
     return new Promise((resolve, reject) => {
-        console.log('loading image', url, myRef.current);
         const img = new Image();
         img.crossOrigin = 'Anonymous'; // Handle cross-origin images
         img.onload = () => {
@@ -31,7 +32,6 @@ async function loadImageToCanvas(url: string, myRef: any) {
                 myRef.current.innerHTML = '';
             }
             myRef.current.appendChild(canvas);
-            console.log('canvas', canvas);
             const ctx = canvas.getContext('2d');
             canvas.width = img.width;
             canvas.height = img.height;
@@ -53,6 +53,7 @@ const GameContext = createContext<GameContextState | undefined>(
 export const GameProvider: FC<{
     children: ReactNode;
 }> = ({children}) => {
+    const [stage, setStage] = useState('001');
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
     const mainRef = useRef<HTMLDivElement>(null);
@@ -101,16 +102,12 @@ export const GameProvider: FC<{
         if (mainRef.current && resultsRef.current) {
             const element = mainRef.current;
             element.offsetHeight;
-            console.log('canvas', width, height);
             await html2canvas(element, {
                 windowWidth: width,
                 windowHeight: height,
-                scale: 1,
+                width: width,
+                height: height,
             }).then((canvas) => {
-                if (width && height) {
-                    // canvas.width = width;
-                    //canvas.height = height;
-                }
                 if (resultsRef.current) {
                     resultsRef.current.innerHTML = '';
                 }
@@ -140,6 +137,8 @@ export const GameProvider: FC<{
         loadImageToCanvas,
         showDiff,
         setShowDiff,
+        stage,
+        setStage
     };
 
 

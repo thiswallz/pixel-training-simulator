@@ -67,9 +67,10 @@ main {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 100;
 
   canvas {
-    width: 200px;
+    width: 150px;
   }
 }
 
@@ -81,6 +82,7 @@ main {
   z-index: -100;
 }
 
-.diff {
-
+img {
+  image-rendering: -webkit-optimize-contrast;
 }
+

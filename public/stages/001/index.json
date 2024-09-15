@@ -1,6 +1,7 @@
 {
   "width": 1200,
   "height": 768,
+  "music": "/musics/1 - Adventure Begin.ogg",
   "base": {
     "className": "base",
     "src": "/stages/001/base.png"
@@ -13,7 +14,7 @@
     {
       "className": "boss",
       "src": "/stages/001/objects/boss.png",
-      "initialCss": ".boss{position: absolute; width: 114px; height: 102px;}"
+      "initialCss": ".boss{\n\tposition: absolute;\n\twidth: 114px;\n\theight: 102px;\n}"
     }
   ]
 }
