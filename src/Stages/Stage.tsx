@@ -11,9 +11,14 @@ type StageProps = {
 }
 
 export default function Stage({stage}: StageProps) {
+    const [userId, setUserId] = useState(null);
+    const [userData, setUserData] = useState<any>(null);
     const [stageData, setStageData] = useState<any>(null);
     const [scaleFactor, setScaleFactor] = useState(1);
+    const [worldCss, setWorldCss] = useState('');
     const {
+        supabase,
+        session,
         loadImageToCanvas,
         mainRef,
         expectedRef,
@@ -29,16 +34,59 @@ export default function Stage({stage}: StageProps) {
         setShowDiff
     } = useGameContext();
 
+    const handleSave = async () => {
+        // save every editor code and score
+        const tree = stageData.tree.map((object: any) => ({className: object.className, css: object.css}));
+        const jsonCss = {
+            tree,
+            worldCss
+        }
+        console.log('jsonEditors', jsonCss)
+        // save on supabase games table
+        const {data, error} = await supabase.from('stages').upsert({
+            user_id: session.user.id,
+            stage,
+            css: jsonCss,
+            score: rank,
+            raw_score: rank
+        }, {
+            returning: 'minimal'
+        })
+
+        console.log('data', data)
+        console.log('error', error)
+    }
+
 
     const loadStage = useCallback(async () => {
-        console.log('load stage', stage);
         const response = await fetch(`/stages/${stage}/index.json`);
         const data = await response.json();
-        console.log('stage data', data);
         setHeight(data.height);
         setWidth(data.width);
         setStageData(data);
+
     }, [stage]);
+
+    const loadUserData = useCallback(async () => {
+        // get data from stage and user id from supabase stages
+        let {data} = await supabase.from('stages').select('*').eq('user_id', userId).eq('stage', stage)
+        data = data[0]
+        console.log('data>>', data)
+        setUserData(data);
+    }, [userId, stage]);
+
+
+    useEffect(() => {
+        if (session?.user?.id) {
+            setUserId(session.user.id)
+        }
+    }, [session]);
+
+    useEffect(() => {
+        if (userId && stageData) {
+            loadUserData()
+        }
+    }, [userId, stageData]);
 
     useEffect(() => {
         if (stageData && expectedRef.current) {
@@ -47,7 +95,6 @@ export default function Stage({stage}: StageProps) {
     }, [stageData, expectedRef]);
 
     useEffect(() => {
-        console.log('load stage effect', stage);
         loadStage()
     }, [stage]);
 
@@ -55,7 +102,6 @@ export default function Stage({stage}: StageProps) {
     const resizeImage = () => {
         const viewportWidth = window.innerWidth - 429;
         const newScaleFactor = viewportWidth < width ? viewportWidth / width : 1;
-        console.log('resize', viewportWidth, width, newScaleFactor);
         setScaleFactor(newScaleFactor);
     };
 
@@ -63,8 +109,6 @@ export default function Stage({stage}: StageProps) {
         if (!width) {
             return;
         }
-        console.log('resize effect', width);
-        // Call resizeImage on mount and add event listener for window resize
         resizeImage();
         window.addEventListener('resize', resizeImage);
 
@@ -77,22 +121,16 @@ export default function Stage({stage}: StageProps) {
         return (<></>)
     }
 
+    console.log('data stage extra: ', stageData, userData)
+
     return (
         <>
             <MusicLoop src={stageData.music}/>
 
             <div className={styles.wrapper}>
                 <div className={styles.tools}>
-                    <div ref={expectedRef} className={'expected'}>
-                    </div>
-                    <div className={styles.toolbar}>
-                        <button>
-                            Login
-                        </button>
-                        <button>
-                            Share it
-                        </button>
-                    </div>
+
+
                     <div className={styles.editor}>
                         {stageData.tree.map((object: any) => {
                             return (
@@ -109,7 +147,13 @@ export default function Stage({stage}: StageProps) {
                                         }
                                         .{object.className} Editor
                                     </h2>
-                                    <CodeEditor initialCode={object.initialCss} identifier={'main'}/>
+                                    <CodeEditor
+                                        initialCode={userData ?
+                                            userData.css.tree.find((item: any) => item.className === object.className)?.css ?? object.initialCss
+                                            : object.initialCss}
+                                        identifier={'main'} onChange={
+                                        (css) => object.css = css
+                                    }/>
                                 </div>
                             )
                         })}
@@ -117,7 +161,11 @@ export default function Stage({stage}: StageProps) {
                             <h2>
                                 .worldWrapper Editor
                             </h2>
-                            <CodeEditor initialCode={`.worldWrapper{}`} identifier={'main'}/>
+                            <CodeEditor
+                                initialCode={userData?.css?.worldCss ? userData.css.worldCss : stageData.worldCss.initialCss}
+                                identifier={'main'} onChange={
+                                setWorldCss
+                            }/>
                         </div>
                         Rank {rank}
                     </div>
@@ -136,12 +184,7 @@ export default function Stage({stage}: StageProps) {
                         Progress:
                     </div>
                     <div className={styles.mainWrapper}>
-                        <main ref={mainRef} id={'main'}
-
-                              style={{
-                                  width: `${width}px`,
-                                  height: `${height}px`,
-                              }}>
+                        <main ref={mainRef} id={'main'} style={{width: `${width}px`, height: `${height}px`}}>
                             <section className={'worldWrapper'}>
                                 {stageData.tree.map((object: any) => {
                                     if (object.src) {
@@ -157,7 +200,6 @@ export default function Stage({stage}: StageProps) {
                                             <div key={object.className} className={object.className}>
                                                 {
                                                     object.children.map((child: any, index: number) => {
-                                                        console.log('repeat', child.repeat);
                                                         child.repeat = child.repeat || 1;
                                                         return Array.from({length: child.repeat}).map((_, j) => {
                                                                 return (
@@ -179,17 +221,17 @@ export default function Stage({stage}: StageProps) {
 
                         </main>
                         <div className={'diffWrapper'}>
-                            <div ref={diffRef} className={cns(styles.diff, showDiff && styles.showDiff)}
-
-                            >
+                            <div ref={diffRef} className={cns(styles.diff, showDiff && styles.showDiff)}>
                             </div>
-
                             <div ref={resultsRef} className={'results'}>
                             </div>
                         </div>
                     </div>
 
                     <div>
+                        <div ref={expectedRef} className={'expected'}>
+                        </div>
+                        <button onClick={handleSave}>Save</button>
                         Stages ({stage}):
                         <div>
                             <button onClick={() => setStage('001')}>001</button>

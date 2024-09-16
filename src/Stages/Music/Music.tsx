@@ -42,8 +42,6 @@ const MusicLoop = ({src}: MusicLoopProps) => {
     }, [hasInteracted]);
 
 
-    console.log('hasInteracted', hasInteracted)
-
     return (
         <audio ref={audioRef} src={src}/>
     );

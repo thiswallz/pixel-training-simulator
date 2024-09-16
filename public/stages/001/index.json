@@ -10,6 +10,9 @@
     "className": "expected",
     "src": "/stages/001/expected.png"
   },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
   "tree": [
     {
       "className": "boss",

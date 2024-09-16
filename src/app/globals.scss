@@ -66,7 +66,7 @@ main {
 .expected {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   z-index: 100;
 
   canvas {
@@ -86,3 +86,10 @@ img {
   image-rendering: -webkit-optimize-contrast;
 }
 
+#auth-sign-in {
+  display: none;
+}
+
+.supabase-auth-ui_ui-divider {
+  display: none !important;
+}

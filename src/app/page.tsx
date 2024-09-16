@@ -11,14 +11,9 @@ export default function Home() {
     return (
         <div className={styles.page}>
             <NavBar/>
-            <motion.div key={stage}
-                        initial={{opacity: 0}}
-                        animate={{opacity: 1}}
-                        transition={{duration: 0.5}}
-                        exit={{opacity: 0}}>
-
+            <div>
                 <Stage stage={stage}/>
-            </motion.div>
+            </div>
         </div>
     );
 }

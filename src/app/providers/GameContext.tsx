@@ -1,4 +1,5 @@
-import {createContext, useContext, FC, ReactNode, useState, useEffect, useRef} from "react";
+import {createContext, useContext, FC, ReactNode, useState, useRef, useEffect} from "react";
+import {createClient, Session} from '@supabase/supabase-js'
 import html2canvas from "html2canvas";
 import pixelmatch from "pixelmatch";
 
@@ -17,9 +18,12 @@ interface GameContextState {
     handleDiff: () => void;
     loadImageToCanvas: (url: string, myRef: any) => void;
     showDiff: boolean;
-    setShowDiff: (showDiff: boolean) => Promise<void>;
+    setShowDiff: (showDiff: boolean) => void;
     stage: string;
     setStage: (stage: string) => void;
+    supabase: any;
+    session: any;
+    setSession: (session: any) => void;
 }
 
 async function loadImageToCanvas(url: string, myRef: any) {
@@ -50,9 +54,15 @@ const GameContext = createContext<GameContextState | undefined>(
     undefined
 );
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+
 export const GameProvider: FC<{
     children: ReactNode;
 }> = ({children}) => {
+    const [session, setSession] = useState<Session | null>(null)
     const [stage, setStage] = useState('001');
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
@@ -99,7 +109,7 @@ export const GameProvider: FC<{
         if (!expectedRef.current || !resultsRef.current || !diffRef.current) {
             return;
         }
-        if (mainRef.current && resultsRef.current) {
+        if (mainRef.current && resultsRef.current && width && height) {
             const element = mainRef.current;
             element.offsetHeight;
             await html2canvas(element, {
@@ -107,6 +117,7 @@ export const GameProvider: FC<{
                 windowHeight: height,
                 width: width,
                 height: height,
+                scale: 1,
             }).then((canvas) => {
                 if (resultsRef.current) {
                     resultsRef.current.innerHTML = '';
@@ -120,6 +131,20 @@ export const GameProvider: FC<{
         }, 50)
 
     }
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({data: {session}}) => {
+            setSession(session)
+        })
+
+        const {
+            data: {subscription},
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+
+        return () => subscription.unsubscribe()
+    }, [])
 
     const contextValue: GameContextState = {
         userId: 'initial',
@@ -138,7 +163,10 @@ export const GameProvider: FC<{
         showDiff,
         setShowDiff,
         stage,
-        setStage
+        setStage,
+        supabase,
+        session,
+        setSession
     };
 
 

@@ -1,14 +1,27 @@
 import {useEffect, useState} from "react";
 import {useGameContext} from "@/app/providers/GameContext";
-import Editor, {DiffEditor, useMonaco, loader} from '@monaco-editor/react';
-
+import Editor from '@monaco-editor/react';
+import {compileString} from 'sass';
+import {BsFiletypeScss} from "react-icons/bs";
+import styles from './CodeEditor.module.scss';
 
 type CodeEditorProps = {
     identifier: string;
     initialCode: string;
+    onChange: (css: string) => void;
 }
 
-export default function CodeEditor({initialCode, identifier}: CodeEditorProps) {
+const compileSass = (code: string) => {
+    try {
+        const result = compileString(code);
+        return result.css;
+    } catch (error) {
+        console.error('Sass compilation error:', error);
+        return '';
+    }
+};
+
+export default function CodeEditor({initialCode, identifier, onChange}: CodeEditorProps) {
     const {
         handleDiff,
     } = useGameContext();
@@ -16,20 +29,24 @@ export default function CodeEditor({initialCode, identifier}: CodeEditorProps) {
 
     const handleChange = (css: string) => {
         setCssCode(css);
+        console.log('css', css)
+        onChange(css);
     };
 
     useEffect(() => {
         // Create a <style> element to inject CSS
-        console.log('useEffect change style css');
         const styleElement = document.createElement('style');
         styleElement.id = 'live-css-style';
         document.head.appendChild(styleElement);
 
         // Function to update the CSS content
         const updateCss = (newCss: string) => {
+            const compiledCss = compileSass(newCss);
+            console.log('compiledCss', compiledCss)
+
             const cssToInject = `
             #${identifier} {
-                ${newCss}
+                ${compiledCss}
             }
         `
             styleElement.textContent = cssToInject;
@@ -48,17 +65,27 @@ export default function CodeEditor({initialCode, identifier}: CodeEditorProps) {
         };
     }, [cssCode]);
 
+    useEffect(() => {
+        console.log('initialCode', initialCode)
+        handleChange(initialCode);
+    }, [initialCode]);
+
     return (
-        <Editor
-            defaultLanguage="scss"
-            theme="vs-dark"
-            height={300}
-            width={400}
-            defaultValue={cssCode}
-            options={{
-                minimap: {enabled: false},
-            }}
-            onChange={handleChange}
-        />
+        <div className={styles.editorWrapper}>
+            <Editor
+                className={'editor'}
+                defaultLanguage="scss"
+                theme="vs-dark"
+                height={300}
+                width={260}
+                value={cssCode}
+                options={{
+                    minimap: {enabled: false},
+                }}
+                onChange={handleChange}
+            />
+            <BsFiletypeScss className={styles.icon}/>
+        </div>
+
     );
 }

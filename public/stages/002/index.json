@@ -10,6 +10,9 @@
     "className": "expected",
     "src": "/stages/002/expected.png"
   },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
   "tree": [
     {
       "className": "monsterWrapper",
