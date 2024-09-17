@@ -128,6 +128,7 @@ export default function Stage({stage}: StageProps) {
             <MusicLoop src={stageData.music}/>
 
             <div className={styles.wrapper}>
+
                 <div className={styles.tools}>
 
 
@@ -184,6 +185,9 @@ export default function Stage({stage}: StageProps) {
                         Progress:
                     </div>
                     <div className={styles.mainWrapper}>
+                        <div className={styles.results}>
+                            <img src={'/assets/PNG/09_Result/result_title_ribbon.png'}/>
+                        </div>
                         <main ref={mainRef} id={'main'} style={{width: `${width}px`, height: `${height}px`}}>
                             <section className={'worldWrapper'}>
                                 {stageData.tree.map((object: any) => {
