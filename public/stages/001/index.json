@@ -16,8 +16,8 @@
   "tree": [
     {
       "className": "boss",
-      "src": "/stages/001/objects/boss.png",
-      "initialCss": ".boss{\n\tposition: absolute;\n\twidth: 114px;\n\theight: 102px;\n}"
+      "src": "/assets/monsters/37.png",
+      "initialCss": ".boss{\n\tposition: absolute;\n\twidth: 480px;\n\theight: 480px;\n}"
     }
   ]
 }
