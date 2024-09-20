@@ -61,7 +61,7 @@ export default function CodeEditor({initialCode, identifier, onChange}: CodeEdit
 
         // Cleanup on unmount
         return () => {
-            document.head.removeChild(styleElement);
+            document.head?.removeChild(styleElement);
         };
     }, [cssCode]);
 

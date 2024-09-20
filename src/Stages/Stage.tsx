@@ -1,5 +1,5 @@
 'use client';
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useGameContext} from "@/app/providers/GameContext";
 import CodeEditor from "@/UI/CodeEditor/CodeEditor";
 import styles from "./Stage.module.scss";
@@ -11,6 +11,7 @@ type StageProps = {
 }
 
 export default function Stage({stage}: StageProps) {
+    const previewRef = useRef(null);
     const [userId, setUserId] = useState(null);
     const [userData, setUserData] = useState<any>(null);
     const [stageData, setStageData] = useState<any>(null);
@@ -33,6 +34,19 @@ export default function Stage({stage}: StageProps) {
         setStage,
         setShowDiff
     } = useGameContext();
+
+    if (mainRef.current && previewRef.current) {
+        const mainContent = mainRef.current.outerHTML;
+        const previewContent = previewRef.current.firstChild ? previewRef.current.firstChild.outerHTML : '';
+
+        if (mainContent !== previewContent) {
+            console.log('mainRef pre', mainRef.current)
+            const clonedElement = mainRef.current.cloneNode(true); // true means deep clone (including children)
+            previewRef.current.innerHTML = ''; // Clear any existing content
+            previewRef.current.appendChild(clonedElement);
+        }
+    }
+
 
     const handleSave = async () => {
         // save every editor code and score
@@ -130,8 +144,6 @@ export default function Stage({stage}: StageProps) {
             <div className={styles.wrapper}>
 
                 <div className={styles.tools}>
-
-
                     <div className={styles.editor}>
                         {stageData.tree.map((object: any) => {
                             return (
@@ -169,26 +181,38 @@ export default function Stage({stage}: StageProps) {
                             }/>
                         </div>
                         Rank {rank}
+                        <div>
+                            <button onClick={() => setShowDiff(!showDiff)}>
+                                {showDiff ? 'Hide' : 'Show'} diff
+                            </button>
+                            <button>
+                                Figma
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <div>
-                        <button onClick={() => setShowDiff(!showDiff)}>
-                            {showDiff ? 'Hide' : 'Show'} diff
-                        </button>
-                        <button>
-                            Figma
-                        </button>
-                    </div>
-                    <div>
-                        Progress:
+
+                <div style={{width: '100%'}}>
+                    <div className={styles.previewWrapper} style={{
+                        transform: `scale(${scaleFactor})`,
+                    }}>
+
+                        <section ref={previewRef} className={styles.preview}
+                                 style={{
+                                     width: `${width}px`,
+                                     height: `${height}px`,
+                                 }}>
+                        </section>
+                        <div ref={diffRef} className={cns(styles.diff, showDiff && styles.showDiff)}>
+                        </div>
                     </div>
                     <div className={styles.mainWrapper}>
-                        <div className={styles.results}>
-                            <img src={'/assets/PNG/09_Result/result_title_ribbon.png'}/>
-                        </div>
-                        <main ref={mainRef} id={'main'} style={{width: `${width}px`, height: `${height}px`}}>
+
+                        <main ref={mainRef} id={'main'} style={{
+                            width: `${width}px`,
+                            height: `${height}px`,
+                        }}>
                             <section className={'worldWrapper'}>
                                 {stageData.tree.map((object: any) => {
                                     if (object.src) {
@@ -225,25 +249,24 @@ export default function Stage({stage}: StageProps) {
 
                         </main>
                         <div className={'diffWrapper'}>
-                            <div ref={diffRef} className={cns(styles.diff, showDiff && styles.showDiff)}>
-                            </div>
+
                             <div ref={resultsRef} className={'results'}>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-                        <div ref={expectedRef} className={'expected'}>
-                        </div>
-                        <button onClick={handleSave}>Save</button>
-                        Stages ({stage}):
-                        <div>
-                            <button onClick={() => setStage('001')}>001</button>
-                            <button onClick={() => setStage('002')}>002</button>
-                            <button onClick={() => setStage('003')}>003</button>
-                        </div>
+                </div>
 
-                    </div>
+            </div>
+            <div>
+                <div ref={expectedRef} className={'expected'}>
+                </div>
+                <button onClick={handleSave}>Save</button>
+                Stages ({stage}):
+                <div>
+                    <button onClick={() => setStage('001')}>001</button>
+                    <button onClick={() => setStage('002')}>002</button>
+                    <button onClick={() => setStage('003')}>003</button>
                 </div>
 
             </div>
