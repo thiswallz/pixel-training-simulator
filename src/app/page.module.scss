@@ -11,3 +11,54 @@
   align-content: center;
   width: 100vw;
 }
+
+
+.stage {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.backdrop {
+  position: absolute;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.9);
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+
+.loading {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+
+
+  .loadingText {
+    z-index: 100;
+    position: absolute;
+    color: white;
+    font-size: 8rem;
+    top: 5vh;
+
+    p {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  img {
+    width: 80vw;
+    height: 90vh;
+  }
+
+}

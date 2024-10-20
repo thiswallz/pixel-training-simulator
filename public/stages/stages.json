@@ -1,0 +1,52 @@
+[
+  {
+    "id": "001",
+    "title": "Stage 01",
+    "bg": "/stages/001/expected.png"
+  },
+  {
+    "id": "002",
+    "title": "Stage 02",
+    "bg": "/stages/002/expected.png"
+  },
+  {
+    "id": "003",
+    "title": "Stage 03",
+    "bg": "/stages/003/expected.png"
+  },
+  {
+    "id": "004",
+    "title": "Stage 04",
+    "bg": "/stages/004/expected.png"
+  },
+  {
+    "id": "005",
+    "title": "Stage 05",
+    "bg": "/stages/005/expected.png"
+  },
+  {
+    "id": "006",
+    "title": "Stage 06",
+    "bg": "/stages/006/expected.png"
+  },
+  {
+    "id": "007",
+    "title": "Stage 07",
+    "bg": "/stages/007/expected.png"
+  },
+  {
+    "id": "008",
+    "title": "Stage 08",
+    "bg": "/stages/008/expected.png"
+  },
+  {
+    "id": "009",
+    "title": "Stage 09",
+    "bg": "/stages/009/expected.png"
+  },
+  {
+    "id": "010",
+    "title": "Stage 10",
+    "bg": "/stages/010/expected.png"
+  }
+]

@@ -1,7 +1,14 @@
 {
+  "id": "001",
   "width": 1200,
   "height": 768,
   "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=1-2&node-type=frame&t=OlWEV1XvCpIY3hOT-0",
+  "baseDelta": 70395,
+  "info": {
+    "title": "Stage 01 - Hint",
+    "description": "Center the monster and win the game.<br /> Check Figma design if you have doubts."
+  },
   "base": {
     "className": "base",
     "src": "/stages/001/base.png"

@@ -42,7 +42,6 @@ export default function CodeEditor({initialCode, identifier, onChange}: CodeEdit
         // Function to update the CSS content
         const updateCss = (newCss: string) => {
             const compiledCss = compileSass(newCss);
-            console.log('compiledCss', compiledCss)
 
             const cssToInject = `
             #${identifier} {
@@ -77,7 +76,7 @@ export default function CodeEditor({initialCode, identifier, onChange}: CodeEdit
                 defaultLanguage="scss"
                 theme="vs-dark"
                 height={300}
-                width={260}
+                width={300}
                 value={cssCode}
                 options={{
                     minimap: {enabled: false},

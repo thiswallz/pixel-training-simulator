@@ -1,76 +1,149 @@
 'use client';
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useGameContext} from "@/app/providers/GameContext";
-import CodeEditor from "@/UI/CodeEditor/CodeEditor";
 import styles from "./Stage.module.scss";
-import cns from "classnames";
 import MusicLoop from "@/Stages/Music/Music";
+import DiffImage from "@/Stages/Diff/DiffImage";
+import {CodeEditorBox} from "@/Stages/CodeEditorBox/CodeEditorBox";
+import {Button} from "@/UI/Button/Button";
+import {InfoModal} from "@/UI/InfoModal/InfoModal";
 
 type StageProps = {
     stage: string;
+    user?: string;
 }
 
-export default function Stage({stage}: StageProps) {
-    const previewRef = useRef(null);
-    const [userId, setUserId] = useState(null);
-    const [userData, setUserData] = useState<any>(null);
-    const [stageData, setStageData] = useState<any>(null);
-    const [scaleFactor, setScaleFactor] = useState(1);
-    const [worldCss, setWorldCss] = useState('');
+function calculatePixelPercentage(rank, delta) {
+    if (rank <= 0) {
+        return 100; // Pixel perfect at rank 0, so return 100%
+    }
+    if (rank >= delta) {
+        return 0; // If rank exceeds or equals delta, return 0 points
+    }
+    // Calculate percentage based on how far away the rank is from 0
+    const percentage = 100 - (rank / delta) * 100;
+    //round it to 0 decimals
+    return percentage.toFixed(0);
+}
+
+export default function Stage({stage, user}: StageProps) {
+    const [userId, setUserId] = useState<any>(null);
+    const [score, setScore] = useState<any>(0);
+    // from 0 to 3
+    const [stars, setStars] = useState<any>(0);
+    // from 0 to 100
+    const [percentage, setPercentage] = useState<any>(0);
+    const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+    const [stages, setStages] = useState<any>([]);
     const {
         supabase,
         session,
         loadImageToCanvas,
-        mainRef,
         expectedRef,
         rank,
         width,
         height,
         setWidth,
         setHeight,
-        diffRef,
-        resultsRef,
-        showDiff,
         setStage,
-        setShowDiff
+        stageData,
+        setStageData,
+        setUserData,
+        worldCss,
+        setShowDiff,
+        showDiff,
+        setLoading,
     } = useGameContext();
 
-    if (mainRef.current && previewRef.current) {
-        const mainContent = mainRef.current.outerHTML;
-        const previewContent = previewRef.current.firstChild ? previewRef.current.firstChild.outerHTML : '';
+    const loadStages = useCallback(async (userId: string) => {
+        const response = await fetch(`/stages/stages.json`);
+        const stages = await response.json();
 
-        if (mainContent !== previewContent) {
-            console.log('mainRef pre', mainRef.current)
-            const clonedElement = mainRef.current.cloneNode(true); // true means deep clone (including children)
-            previewRef.current.innerHTML = ''; // Clear any existing content
-            previewRef.current.appendChild(clonedElement);
+        if (userId) {
+            const {data} = await supabase.from('stages')
+                .select('stars, stage')
+                .eq('user_id', userId)
+            if (data) {
+                data.forEach((stage: any) => {
+                    // update stars on stages
+                    const index = stages.findIndex((s: any) => s.id === stage.stage)
+                    stages[index].stars = stage.stars
+                })
+
+                setStages(stages);
+            }
+        } else {
+            setStages(stages);
+        }
+    }, [userId]);
+
+
+    const getTitle = (stagesCompleted: number) => {
+        if (stagesCompleted >= 5) {
+            return 'Pixel Perfect Junior'
+        } else if (stagesCompleted >= 10) {
+            return 'Pixel Perfect Mid/Senior'
+        } else if (stagesCompleted >= 20) {
+            return 'Pixel Perfect Senior'
+        } else if (stagesCompleted >= 50) {
+            return 'Pixel Perfect Professional'
+        } else {
+            return 'Pixel Perfect Learner'
         }
     }
 
+    const calculateProfile = async () => {
+        // select and sum up all scores, stars and how many stages are completed (score==100) and return it
+        // to save it on profile
+        const {data, error} = await supabase.from('stages')
+            .select('score, stars, stage')
+            .eq('user_id', session.user.id)
+
+        let totalScore = 0
+        let totalStars = 0
+        let stagesCompleted = 0
+        data.forEach((stage: any) => {
+            totalScore += stage.score
+            totalStars += stage.stars
+            if (stage.stars === 3) {
+                stagesCompleted++
+            }
+        })
+        await supabase.from('profile').upsert({
+            user_id: session.user.id,
+            stars: totalStars,
+            score: totalScore,
+            stages_completed: stagesCompleted,
+            title: getTitle(stagesCompleted)
+        }, {
+            returning: 'minimal'
+        })
+    }
 
     const handleSave = async () => {
-        // save every editor code and score
+        setLoading(true)
         const tree = stageData.tree.map((object: any) => ({className: object.className, css: object.css}));
         const jsonCss = {
             tree,
             worldCss
         }
-        console.log('jsonEditors', jsonCss)
-        // save on supabase games table
         const {data, error} = await supabase.from('stages').upsert({
             user_id: session.user.id,
             stage,
             css: jsonCss,
             score: rank,
-            raw_score: rank
+            raw_score: rank,
+            stars,
+            percentage,
         }, {
             returning: 'minimal'
         })
 
+        await calculateProfile()
+        setLoading(false)
         console.log('data', data)
         console.log('error', error)
     }
-
 
     const loadStage = useCallback(async () => {
         const response = await fetch(`/stages/${stage}/index.json`);
@@ -78,23 +151,36 @@ export default function Stage({stage}: StageProps) {
         setHeight(data.height);
         setWidth(data.width);
         setStageData(data);
-
     }, [stage]);
 
     const loadUserData = useCallback(async () => {
-        // get data from stage and user id from supabase stages
         let {data} = await supabase.from('stages').select('*').eq('user_id', userId).eq('stage', stage)
-        data = data[0]
-        console.log('data>>', data)
-        setUserData(data);
+        if (data) {
+            data = data[0]
+            setUserData(data);
+        }
+        setLoading(false)
     }, [userId, stage]);
 
+    const toggleInfoModal = () => {
+        setIsInfoModalOpen(!isInfoModalOpen);
+    }
 
     useEffect(() => {
         if (session?.user?.id) {
             setUserId(session.user.id)
+            loadStages(session.user.id)
+        } else {
+            loadStages(userId)
         }
     }, [session]);
+
+    useEffect(() => {
+        if (user) {
+            setUserId(user)
+            loadStages(user)
+        }
+    }, [user]);
 
     useEffect(() => {
         if (userId && stageData) {
@@ -112,165 +198,110 @@ export default function Stage({stage}: StageProps) {
         loadStage()
     }, [stage]);
 
-
-    const resizeImage = () => {
-        const viewportWidth = window.innerWidth - 429;
-        const newScaleFactor = viewportWidth < width ? viewportWidth / width : 1;
-        setScaleFactor(newScaleFactor);
-    };
-
     useEffect(() => {
-        if (!width) {
-            return;
+        // mas pixels delta 35215, when rank is 0 is pixel perfect 100%, if it gets away of 0, we start discounting points
+        // if gets to 35215 or more, we get 0 points
+        // percentage calculation
+        if (rank === null || !stageData) {
+            return
         }
-        resizeImage();
-        window.addEventListener('resize', resizeImage);
-
-        // Clean up the event listener on component unmount
-        return () => window.removeEventListener('resize', resizeImage);
-    }, [width]);
-
+        const result: number = parseInt(calculatePixelPercentage(rank, stageData.baseDelta) + '')
+        setScore(result)
+        setPercentage(result)
+        if (result >= 100) {
+            setStars(3)
+        } else if (result >= 90) {
+            setStars(2)
+        } else if (result >= 80) {
+            setStars(1)
+        } else {
+            setStars(0)
+        }
+        console.log('result', result)
+    }, [rank, stageData]);
 
     if (!width || !height || !stageData) {
         return (<></>)
     }
 
-    console.log('data stage extra: ', stageData, userData)
-
     return (
-        <>
+        <div>
             <MusicLoop src={stageData.music}/>
-
             <div className={styles.wrapper}>
 
                 <div className={styles.tools}>
-                    <div className={styles.editor}>
-                        {stageData.tree.map((object: any) => {
-                            return (
-                                <div key={object.className}>
-                                    <h2>
-                                        {
-                                            object.children ? object.children.map((child: any, index: number) => {
-                                                return (
-                                                    <img key={index} className={styles.editorObject} src={child.src}/>
-                                                )
-                                            }) : (
-                                                <img className={styles.editorObject} src={object.src}/>
-                                            )
-                                        }
-                                        .{object.className} Editor
-                                    </h2>
-                                    <CodeEditor
-                                        initialCode={userData ?
-                                            userData.css.tree.find((item: any) => item.className === object.className)?.css ?? object.initialCss
-                                            : object.initialCss}
-                                        identifier={'main'} onChange={
-                                        (css) => object.css = css
-                                    }/>
-                                </div>
-                            )
-                        })}
-                        <div>
-                            <h2>
-                                .worldWrapper Editor
-                            </h2>
-                            <CodeEditor
-                                initialCode={userData?.css?.worldCss ? userData.css.worldCss : stageData.worldCss.initialCss}
-                                identifier={'main'} onChange={
-                                setWorldCss
-                            }/>
-                        </div>
-                        Rank {rank}
-                        <div>
-                            <button onClick={() => setShowDiff(!showDiff)}>
-                                {showDiff ? 'Hide' : 'Show'} diff
-                            </button>
-                            <button>
-                                Figma
-                            </button>
+                    <div className={styles.expectedTitle}>
+                        Expected
+                    </div>
+                    <div ref={expectedRef} className={'expected'}>
+                    </div>
+                    <div className={styles.figmaWrapper}>
+                        <a target={"_blank"} href={stageData.figmaLink}>
+                            <img src={'/assets/figma.svg'} alt={'Figma link'}/>
+                        </a>
+                    </div>
+                    <CodeEditorBox/>
+                    <div className={styles.score}>
+                        <p>
+                            {score}<span>%</span>
+                        </p>
+                        <img src={'/assets/stage/levelup_badge_body.png'} alt={'expected'}
+                             className={styles.stageBg}/>
+                        <div className={styles.stars}>
+                            <img src={`/assets/stage/result_star${stars > 0 ? `` : '_dim'} 1.png`} alt={'star'}/>
+                            <img src={`/assets/stage/result_star${stars > 1 ? `` : '_dim'} 1.png`} alt={'star'}/>
+                            <img src={`/assets/stage/result_star${stars > 2 ? `` : '_dim'} 1.png`} alt={'star'}/>
                         </div>
                     </div>
                 </div>
-
-
-                <div style={{width: '100%'}}>
-                    <div className={styles.previewWrapper} style={{
-                        transform: `scale(${scaleFactor})`,
-                    }}>
-
-                        <section ref={previewRef} className={styles.preview}
-                                 style={{
-                                     width: `${width}px`,
-                                     height: `${height}px`,
-                                 }}>
-                        </section>
-                        <div ref={diffRef} className={cns(styles.diff, showDiff && styles.showDiff)}>
-                        </div>
+                <div className={styles.diffImageWrapper}>
+                    <div className={styles.buttons}>
+                        <Button variant={'mint'} onClick={() => setShowDiff(!showDiff)}>
+                            {showDiff ? 'Hide' : 'Show'} diff
+                        </Button>
+                        <Button variant={'mint'} onClick={toggleInfoModal}>Info</Button>
                     </div>
-                    <div className={styles.mainWrapper}>
-
-                        <main ref={mainRef} id={'main'} style={{
-                            width: `${width}px`,
-                            height: `${height}px`,
-                        }}>
-                            <section className={'worldWrapper'}>
-                                {stageData.tree.map((object: any) => {
-                                    if (object.src) {
-                                        object.repeat = object.repeat || 1;
-                                        return Array.from({length: object.repeat}).map((_, j) => {
-                                            return (
-                                                <img key={object.className} className={object.className}
-                                                     src={object.src}/>
-                                            )
-                                        })
-                                    } else {
-                                        return (
-                                            <div key={object.className} className={object.className}>
-                                                {
-                                                    object.children.map((child: any, index: number) => {
-                                                        child.repeat = child.repeat || 1;
-                                                        return Array.from({length: child.repeat}).map((_, j) => {
-                                                                return (
-                                                                    <img key={`${child.className}-${index}-${j}`}
-                                                                         className={child.className}
-                                                                         src={child.src}/>
-                                                                )
-                                                            }
-                                                        )
-                                                    })
-                                                }
+                    <DiffImage/>
+                    <div className={styles.stagesSelectorWrapper}>
+                        <div className={styles.saveWrapper}>
+                            {!user && <Button onClick={handleSave} variant={'success'}>Save</Button>}
+                        </div>
+                        <div className={styles.stagesWrapper}>
+                            <h2 className={styles.stageTitle}>Stages</h2>
+                            <div className={styles.stagesContainer}>
+                                {
+                                    stages.map((stage: any) => (
+                                        <div key={stage.id}
+                                             className={styles.stageSelectorWrapper}
+                                             onClick={() => setStage(stage.id)}>
+                                            <div className={styles.stageStars}>
+                                                <img
+                                                    src={`/assets/stage/result_star${stage.stars > 0 ? `` : '_dim'} 1.png`}
+                                                    alt={'star'}/>
+                                                <img
+                                                    src={`/assets/stage/result_star${stage.stars > 1 ? `` : '_dim'} 1.png`}
+                                                    alt={'star'}/>
+                                                <img
+                                                    src={`/assets/stage/result_star${stage.stars > 2 ? `` : '_dim'} 1.png`}
+                                                    alt={'star'}/>
                                             </div>
-                                        )
-                                    }
-                                })}
-                            </section>
-                            {stageData.base &&
-                                <img className={stageData.base.className} src={stageData.base.src}/>}
-
-                        </main>
-                        <div className={'diffWrapper'}>
-
-                            <div ref={resultsRef} className={'results'}>
+                                            <img className={styles.stageBg} src={`${stage.bg}`} alt={stage.id}/>
+                                        </div>
+                                    ))
+                                }
                             </div>
+
                         </div>
                     </div>
-
                 </div>
 
             </div>
-            <div>
-                <div ref={expectedRef} className={'expected'}>
-                </div>
-                <button onClick={handleSave}>Save</button>
-                Stages ({stage}):
-                <div>
-                    <button onClick={() => setStage('001')}>001</button>
-                    <button onClick={() => setStage('002')}>002</button>
-                    <button onClick={() => setStage('003')}>003</button>
-                </div>
 
-            </div>
-        </>
+            <InfoModal onClose={toggleInfoModal} isInfoModalOpen={isInfoModalOpen}>
+                <h2>{stageData.info.title}</h2>
+                <p dangerouslySetInnerHTML={{__html: stageData.info.description}}/>
+            </InfoModal>
+        </div>
 
     );
 }

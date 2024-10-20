@@ -23,6 +23,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: url('/assets/reward_bg.png') no-repeat center center fixed;
+  background-size: cover;
 }
 
 * {
@@ -42,12 +44,24 @@ main {
   overflow: hidden;
 }
 
+#main {
+  img {
+    user-select: none;
+    touch-action: none;
+    pointer-events: none;
+  }
+}
+
 .object2 {
   position: absolute;
   left: 50%;
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+
+* {
+  image-rendering: pixelated !important;
 }
 
 .monster2 {
@@ -68,12 +82,16 @@ main {
 .expected {
   position: absolute;
   top: 0;
-  left: 0;
-  z-index: 100;
+  right: 0;
+  z-index: 40;
 
   canvas {
     width: 150px;
+    padding: 10px;
   }
+
+  background: url("/assets/stage/stage_frame_current 1.png") no-repeat center center;
+  background-size: 150px 110px;
 }
 
 .results {

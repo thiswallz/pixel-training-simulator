@@ -24,6 +24,14 @@ interface GameContextState {
     supabase: any;
     session: any;
     setSession: (session: any) => void;
+    stageData: any;
+    setStageData: (stageData: any) => void;
+    userData: any;
+    setUserData: (userData: any) => void;
+    worldCss: string;
+    setWorldCss: (worldCss: string) => void;
+    loading: boolean;
+    setLoading: (loading: boolean) => void;
 }
 
 async function loadImageToCanvas(url: string, myRef: any) {
@@ -62,6 +70,7 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 export const GameProvider: FC<{
     children: ReactNode;
 }> = ({children}) => {
+    const [loading, setLoading] = useState(true);
     const [session, setSession] = useState<Session | null>(null)
     const [stage, setStage] = useState('001');
     const [width, setWidth] = useState(0);
@@ -72,6 +81,9 @@ export const GameProvider: FC<{
     const diffRef = useRef<HTMLDivElement>(null);
     const [rank, setRank] = useState(0);
     const [showDiff, setShowDiff] = useState(false);
+    const [stageData, setStageData] = useState<any>(null);
+    const [userData, setUserData] = useState<any>(null);
+    const [worldCss, setWorldCss] = useState('');
 
     const executeDiff = () => {
         if (!expectedRef.current || !resultsRef.current || !diffRef.current) {
@@ -166,7 +178,15 @@ export const GameProvider: FC<{
         setStage,
         supabase,
         session,
-        setSession
+        setSession,
+        stageData,
+        setStageData,
+        userData,
+        setUserData,
+        worldCss,
+        setWorldCss,
+        loading,
+        setLoading,
     };
 
 

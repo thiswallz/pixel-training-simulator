@@ -1,0 +1,33 @@
+.button {
+  cursor: pointer;
+  border: none;
+  width: 81px;
+  height: 46px;
+  background: url("/assets/stage/common_btn_red.png") no-repeat;
+  transition: opacity .25s ease-in-out;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+
+  &:hover {
+    opacity: .5;
+  }
+}
+
+.secondary {
+  background: url("/assets/stage/common_btn_bluegray.png") no-repeat;
+  background-size: 81px 48px;
+  color: black;
+}
+
+.mint {
+  background: url("/assets/stage/common_btn_mint.png") no-repeat;
+  background-size: 81px 48px;
+  color: black;
+}
+
+.success {
+  background: url("/assets/stage/common_btn_green.png") no-repeat;
+  background-size: 81px 48px;
+  color: black;
+}

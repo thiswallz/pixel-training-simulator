@@ -4,6 +4,7 @@
   padding: 1rem 2rem;
   font-size: 1.2rem;
   gap: 20px;
+  background: #00000047;
 }
 
 .title {
@@ -24,5 +25,30 @@
     width: 40px;
     height: 40px;
     border-radius: 100%;
+  }
+}
+
+.toolbar {
+  flex-grow: 1;
+  justify-content: flex-end;
+  display: flex;
+}
+
+.profile {
+  cursor: pointer;
+  transition: opacity .25s ease-in-out;
+
+  &:hover {
+    opacity: .8;
+  }
+}
+
+.profileStars {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  img {
+    width: 20px;
   }
 }
