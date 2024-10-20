@@ -151,6 +151,7 @@ export default function Stage({stage, user}: StageProps) {
         setHeight(data.height);
         setWidth(data.width);
         setStageData(data);
+        setLoading(false)
     }, [stage]);
 
     const loadUserData = useCallback(async () => {
