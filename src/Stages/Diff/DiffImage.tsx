@@ -73,6 +73,7 @@ export default function DiffImage() {
             panzoom.current.pan(0, 0)
             panzoom.current.reset()
             panzoom.current.zoom(1, {animate: true})
+            // @ts-ignore
             elem.parentElement!.addEventListener('wheel', panzoom.current.zoomWithWheel)
         }
     }, [wrapperRef]);
