@@ -27,9 +27,8 @@ export default function CodeEditor({initialCode, identifier, onChange}: CodeEdit
     } = useGameContext();
     const [cssCode, setCssCode] = useState(initialCode);
 
-    const handleChange = (css: string) => {
+    const handleChange = (css: any) => {
         setCssCode(css);
-        console.log('css', css)
         onChange(css);
     };
 

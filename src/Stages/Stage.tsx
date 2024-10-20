@@ -13,7 +13,7 @@ type StageProps = {
     user?: string;
 }
 
-function calculatePixelPercentage(rank, delta) {
+function calculatePixelPercentage(rank: any, delta: any) {
     if (rank <= 0) {
         return 100; // Pixel perfect at rank 0, so return 100%
     }
