@@ -1,0 +1,36 @@
+{
+  "id": "003",
+  "width": 1200,
+  "height": 768,
+  "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=1-92&node-type=frame&t=VTLQRSFRWgOzHxTX-0",
+  "baseDelta": 97835,
+  "info": {
+    "title": "Stage 03 - Hint",
+    "description": "Check Figma design if you have doubts.<br />  Try to find a pattern."
+  },
+  "base": {
+    "className": "base",
+    "src": "/stages/003/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/003/expected.png"
+  },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
+  "tree": [
+    {
+      "className": "orangeWrapper",
+      "initialCss": ".orangeWrapper {\n\tposition: absolute;\n\tdisplay: flex;\n} \n.orange {\n\tdisplay: block;\n}",
+      "children": [
+        {
+          "className": "orange",
+          "repeat": 3,
+          "src": "/assets/monsters/40.png"
+        }
+      ]
+    }
+  ]
+}

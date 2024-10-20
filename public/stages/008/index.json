@@ -1,0 +1,36 @@
+{
+  "id": "008",
+  "width": 1200,
+  "height": 768,
+  "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=1-163&node-type=frame&t=VTLQRSFRWgOzHxTX-0",
+  "baseDelta": 62101,
+  "info": {
+    "title": "Stage 08 - Hint",
+    "description": "Check Figma design if you have doubts.<br />  Try to find a pattern."
+  },
+  "base": {
+    "className": "base",
+    "src": "/stages/008/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/008/expected.png"
+  },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
+  "tree": [
+    {
+      "className": "skylumeWrapper",
+      "initialCss": ".skylumeWrapper {\n\tposition: absolute;\n\tdisplay: flex;\n} \n.skylume {\n\tdisplay: block;\n\twidth: 150px;\n}",
+      "children": [
+        {
+          "className": "skylume",
+          "repeat": 4,
+          "src": "/assets/monsters/29.png"
+        }
+      ]
+    }
+  ]
+}

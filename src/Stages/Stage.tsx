@@ -140,7 +140,9 @@ export default function Stage({stage, user}: StageProps) {
         })
 
         await calculateProfile()
-        setLoading(false)
+        setTimeout(() => {
+            setLoading(false)
+        }, 500)
         console.log('data', data)
         console.log('error', error)
     }
@@ -151,7 +153,9 @@ export default function Stage({stage, user}: StageProps) {
         setHeight(data.height);
         setWidth(data.width);
         setStageData(data);
-        setLoading(false)
+        setTimeout(() => {
+            setLoading(false)
+        }, 500)
     }, [stage]);
 
     const loadUserData = useCallback(async () => {
@@ -160,11 +164,20 @@ export default function Stage({stage, user}: StageProps) {
             data = data[0]
             setUserData(data);
         }
-        setLoading(false)
+        setTimeout(() => {
+            setLoading(false)
+        }, 500)
     }, [userId, stage]);
 
     const toggleInfoModal = () => {
         setIsInfoModalOpen(!isInfoModalOpen);
+    }
+
+    const handleSelectStage = (newValue: any) => {
+        if (stage != newValue.id) {
+            setLoading(true)
+            setStage(newValue.id)
+        }
     }
 
     useEffect(() => {
@@ -265,7 +278,7 @@ export default function Stage({stage, user}: StageProps) {
                     <DiffImage/>
                     <div className={styles.stagesSelectorWrapper}>
                         <div className={styles.saveWrapper}>
-                            {!user && <Button onClick={handleSave} variant={'success'}>Save</Button>}
+                            {!user && session && <Button onClick={handleSave} variant={'success'}>Save</Button>}
                         </div>
                         <div className={styles.stagesWrapper}>
                             <h2 className={styles.stageTitle}>Stages</h2>
@@ -274,7 +287,7 @@ export default function Stage({stage, user}: StageProps) {
                                     stages.map((stage: any) => (
                                         <div key={stage.id}
                                              className={styles.stageSelectorWrapper}
-                                             onClick={() => setStage(stage.id)}>
+                                             onClick={() => handleSelectStage(stage)}>
                                             <div className={styles.stageStars}>
                                                 <img
                                                     src={`/assets/stage/result_star${stage.stars > 0 ? `` : '_dim'} 1.png`}

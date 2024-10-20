@@ -12,7 +12,7 @@ const MusicLoop = ({src}: MusicLoopProps) => {
         const audio = audioRef.current as any;
         if (audio) {
             audio.loop = true; // Set the audio to loop
-            audio.volume = 0.2; // Set the volume to 10%
+            audio.volume = 0.07; // Set the volume to 10%
             setTimeout(() => {
                 audio.play(); // Start playing the audio
             }, 1000)

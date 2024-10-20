@@ -1,0 +1,51 @@
+{
+  "id": "005",
+  "width": 1200,
+  "height": 768,
+  "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=1-120&node-type=frame&t=VTLQRSFRWgOzHxTX-0",
+  "baseDelta": 32242,
+  "info": {
+    "title": "Stage 05 - Hint",
+    "description": "Check Figma design if you have doubts.<br />  Try to find a pattern."
+  },
+  "base": {
+    "className": "base",
+    "src": "/stages/005/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/005/expected.png"
+  },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
+  "tree": [
+    {
+      "className": "little_green",
+      "src": "/assets/monsters/27.png",
+      "initialCss": ".little_green{\n\tposition: absolute;\n\twidth: 180px;\n\theight: 180px;\n}"
+    },
+    {
+      "className": "big_green",
+      "src": "/assets/monsters/26.png",
+      "initialCss": ".big_green{\n\tposition: absolute;\n\twidth: 180px;\n\theight: 180px;\n}"
+    },
+    {
+      "className": "sleepy",
+      "src": "/assets/monsters/18.png",
+      "initialCss": ".sleepy{\n\tposition: absolute;\n\twidth: 180px;\n\theight: 180px;\n}"
+    },
+    {
+      "className": "cyclopWrapper",
+      "initialCss": ".cyclopWrapper {\n\tposition: absolute;\n\tdisplay: flex;\n} \n.cyclop {\n\tdisplay: block;\n\twidth: 50px;\n}",
+      "children": [
+        {
+          "className": "cyclop",
+          "repeat": 2,
+          "src": "/assets/monsters/37.png"
+        }
+      ]
+    }
+  ]
+}

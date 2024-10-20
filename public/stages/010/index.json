@@ -1,0 +1,35 @@
+{
+  "id": "010",
+  "width": 1200,
+  "height": 768,
+  "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=7-256&node-type=frame&t=VTLQRSFRWgOzHxTX-0",
+  "baseDelta": 105222,
+  "info": {
+    "title": "Stage 10 - Hint",
+    "description": "Check Figma design if you have doubts.<br />  Be aware of the backdrop."
+  },
+  "base": {
+    "className": "base",
+    "src": "/stages/010/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/010/expected.png"
+  },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
+  "tree": [
+    {
+      "className": "ninja",
+      "src": "/assets/monsters/6.png",
+      "initialCss": ".ninja{\n\tposition: absolute;\n\twidth: 480px;\n\theight: 480px;\n}"
+    },
+    {
+      "className": "modal",
+      "src": "/stages/010/objects/modal.png",
+      "initialCss": ".modal{\n\tposition: absolute;\n\twidth: 180px;\n\theight: 180px;\n}"
+    }
+  ]
+}

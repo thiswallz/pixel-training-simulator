@@ -1,0 +1,41 @@
+{
+  "id": "006",
+  "width": 1200,
+  "height": 768,
+  "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=1-134&node-type=frame&t=VTLQRSFRWgOzHxTX-0",
+  "baseDelta": 30327,
+  "info": {
+    "title": "Stage 06 - Hint",
+    "description": "Check Figma design if you have doubts.<br />  Try to find a pattern."
+  },
+  "base": {
+    "className": "base",
+    "src": "/stages/006/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/006/expected.png"
+  },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
+  "tree": [
+    {
+      "className": "pinky",
+      "src": "/assets/monsters/3.png",
+      "initialCss": ".pinky{\n\tposition: absolute;\n\twidth: 180px;\n\theight: 180px;\n}"
+    },
+    {
+      "className": "sleepyWrapper",
+      "initialCss": ".sleepyWrapper {\n\tposition: absolute;\n\tdisplay: flex;\n} \n.sleepy {\n\tdisplay: block;\n\twidth: 50px;\n}",
+      "children": [
+        {
+          "className": "sleepy",
+          "repeat": 4,
+          "src": "/assets/monsters/18.png"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "007",
+  "width": 1200,
+  "height": 768,
+  "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=1-150&node-type=frame&t=VTLQRSFRWgOzHxTX-0",
+  "baseDelta": 49043,
+  "info": {
+    "title": "Stage 07 - Hint",
+    "description": "Check Figma design if you have doubts.<br />  Try to find a pattern."
+  },
+  "base": {
+    "className": "base",
+    "src": "/stages/007/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/007/expected.png"
+  },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
+  "tree": [
+    {
+      "className": "trioculus",
+      "src": "/assets/monsters/16.png",
+      "initialCss": ".trioculus{\n\tposition: absolute;\n\twidth: 180px;\n\theight: 180px;\n}"
+    },
+    {
+      "className": "sleepyWrapper",
+      "initialCss": ".sleepyWrapper {\n\tposition: absolute;\n\tdisplay: flex;\n} \n.sleepy {\n\tdisplay: block;\n\twidth: 50px;\n}",
+      "children": [
+        {
+          "className": "sleepy",
+          "repeat": 2,
+          "src": "/assets/monsters/18.png"
+        }
+      ]
+    }
+  ]
+}

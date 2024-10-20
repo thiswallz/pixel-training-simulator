@@ -111,6 +111,7 @@ export const GameProvider: FC<{
             const diff = diffContext.createImageData(width, height);
 
             const results = pixelmatch(img1.data, img2.data, diff.data, width, height, {threshold: 0.2});
+            console.log('results rank :', results);
             setRank(results);
 
             diffContext.putImageData(diff, 0, 0);

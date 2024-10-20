@@ -1,0 +1,46 @@
+{
+  "id": "002",
+  "width": 1200,
+  "height": 768,
+  "music": "/musics/4 - Village.ogg",
+  "baseDelta": 121629,
+  "info": {
+    "title": "Stage 02 - Hint",
+    "description": "1) center the flame monster on bottom. <br /> 2) Align the cyclops on top (pay attention to the pattern)."
+  },
+  "base": {
+    "className": "base",
+    "src": "/stages/002/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/002/expected.png"
+  },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
+  "tree": [
+    {
+      "className": "cyclopsWrapper",
+      "initialCss": ".cyclopsWrapper{position: absolute; display: flex;} .cyclop{display: block;}",
+      "children": [
+        {
+          "className": "cyclop",
+          "repeat": 6,
+          "src": "/stages/002/objects/monster.png"
+        }
+      ]
+    },
+    {
+      "className": "flameWrapper",
+      "initialCss": ".flameWrapper{position: absolute; display: flex;} .flame{display: block;}",
+      "children": [
+        {
+          "className": "flame",
+          "src": "/stages/002/objects/flame.png",
+          "initialCss": ".flame{position: absolute;}"
+        }
+      ]
+    }
+  ]
+}

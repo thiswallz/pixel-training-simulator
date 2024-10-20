@@ -2,11 +2,12 @@
   "id": "002",
   "width": 1200,
   "height": 768,
-  "music": "/musics/4 - Village.ogg",
-  "baseDelta": 121629,
+  "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=1-85&node-type=frame&t=VTLQRSFRWgOzHxTX-0",
+  "baseDelta": 76341,
   "info": {
     "title": "Stage 02 - Hint",
-    "description": "1) center the flame monster on bottom. <br /> 2) Align the cyclops on top (pay attention to the pattern)."
+    "description": "Check Figma design if you have doubts.<br /> Grids can be helpful."
   },
   "base": {
     "className": "base",
@@ -21,26 +22,14 @@
   },
   "tree": [
     {
-      "className": "cyclopsWrapper",
-      "initialCss": ".cyclopsWrapper{position: absolute; display: flex;} .cyclop{display: block;}",
-      "children": [
-        {
-          "className": "cyclop",
-          "repeat": 6,
-          "src": "/stages/002/objects/monster.png"
-        }
-      ]
+      "className": "yellow",
+      "src": "/assets/monsters/37.png",
+      "initialCss": ".yellow{\n\twidth: 180px;\n\theight: 180px;\n}"
     },
     {
-      "className": "flameWrapper",
-      "initialCss": ".flameWrapper{position: absolute; display: flex;} .flame{display: block;}",
-      "children": [
-        {
-          "className": "flame",
-          "src": "/stages/002/objects/flame.png",
-          "initialCss": ".flame{position: absolute;}"
-        }
-      ]
+      "className": "green",
+      "src": "/assets/monsters/26.png",
+      "initialCss": ".green{\n\twidth: 180px;\n\theight: 180px;\n}"
     }
   ]
 }

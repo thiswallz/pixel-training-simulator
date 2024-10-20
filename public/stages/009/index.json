@@ -1,0 +1,36 @@
+{
+  "id": "009",
+  "width": 1200,
+  "height": 768,
+  "music": "/musics/1 - Adventure Begin.ogg",
+  "figmaLink": "https://www.figma.com/design/CXeP5NnIQGhPk7u5cg1ATA/Stages-Pixel-Perfect-Training?node-id=1-190&node-type=frame&t=VTLQRSFRWgOzHxTX-0",
+  "baseDelta": 16654,
+  "info": {
+    "title": "Stage 09 - Hint",
+    "description": "Check Figma design if you have doubts.<br />  Try to find a pattern."
+  },
+  "base": {
+    "className": "base",
+    "src": "/stages/009/base.png"
+  },
+  "expected": {
+    "className": "expected",
+    "src": "/stages/009/expected.png"
+  },
+  "worldCss": {
+    "initialCss": ".worldWrapper {\n}"
+  },
+  "tree": [
+    {
+      "className": "snausieWrapper",
+      "initialCss": ".snausieWrapper {\n\tposition: absolute;\n\tdisplay: flex;\n} \n.snausie {\n\tdisplay: block;\n\twidth: 150px;\n}",
+      "children": [
+        {
+          "className": "snausie",
+          "repeat": 4,
+          "src": "/assets/monsters/35.png"
+        }
+      ]
+    }
+  ]
+}

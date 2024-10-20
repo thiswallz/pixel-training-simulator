@@ -45,6 +45,8 @@ main {
 }
 
 #main {
+  position: relative;
+
   img {
     user-select: none;
     touch-action: none;
